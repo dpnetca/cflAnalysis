@@ -1,15 +1,17 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"os"
 
 	"github.com/dpnetca/cflAnalysis/pkg/analysis"
+	"github.com/dpnetca/cflAnalysis/pkg/cfl"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	// godotenv.Load()
-	// c := cfl.NewClient(os.Getenv("CFLAPIKEY"))
+	godotenv.Load()
+	c := cfl.NewClient(os.Getenv("CFLAPIKEY"))
 
 	// standings, err := c.GetStandings("2022")
 	// if err != nil {
@@ -21,26 +23,31 @@ func main() {
 	// 	if err != nil {
 	// 		log.Fatalln(err)
 	// 	}
-	// 	// analysis.TotalPointsByGame(games)
-	// 	// fmt.Println("")
-	// 	// analysis.TotalPointsByWeek(games)
-	// 	// fmt.Println("")
+	// 	analysis.TotalPointsByGame(games)
+	// 	fmt.Println("")
+	// 	analysis.TotalPointsByWeek(games)
+	// 	fmt.Println("")
 	// 	fmt.Printf("%d ", i)
 	// 	analysis.AveragePointsPerGame(games)
 	// }
-
-	ss, err := analysis.NewScheduleStrength("2022")
+	games, err := c.GetAllGames("2022")
 	if err != nil {
 		log.Fatalln(err)
 	}
-	for _, team := range ss.Team {
-		fmt.Printf("%v\n", team)
-		playedWinningPct := float32(team.Played.OpposingWins) / float32(team.Played.GamesPlayed) * 100
-		remainingWinningPct := float32(team.Remaining.OpposingWins) / float32(team.Remaining.GamesPlayed) * 100
-		fmt.Printf("%s\n", team.TeamName)
-		fmt.Printf("Played Winning Pct: %.2f\n", playedWinningPct)
-		fmt.Printf("Remaining Winning Pct: %.2f\n", remainingWinningPct)
-		fmt.Println()
+	analysis.WeeklyOverUnderX(games, 55.5)
 
-	}
+	// ss, err := analysis.NewScheduleStrength("2022")
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+	// for _, team := range ss.Team {
+	// 	fmt.Printf("%v\n", team)
+	// 	playedWinningPct := float32(team.Played.OpposingWins) / float32(team.Played.GamesPlayed) * 100
+	// 	remainingWinningPct := float32(team.Remaining.OpposingWins) / float32(team.Remaining.GamesPlayed) * 100
+	// 	fmt.Printf("%s\n", team.TeamName)
+	// 	fmt.Printf("Played Winning Pct: %.2f\n", playedWinningPct)
+	// 	fmt.Printf("Remaining Winning Pct: %.2f\n", remainingWinningPct)
+	// 	fmt.Println()
+
+	// }
 }

@@ -57,3 +57,54 @@ func TotalPointsByWeek(season cfl.Season) {
 	}
 	fmt.Printf("Week %d: %d\n", week, score)
 }
+
+func TotalOverUnderX(season cfl.Season, score float32) {
+	over := 0
+	under := 0
+	match := 0
+	for _, game := range season.Games {
+		if !(game.Type.ID == 1 && game.Status.ID == 4) {
+			continue
+		}
+		gameScore := game.Team1.Score + game.Team2.Score
+		if float32(gameScore) > score {
+			over++
+		} else if float32(gameScore) < score {
+			under++
+		} else {
+			match++
+		}
+	}
+	fmt.Printf("Target: %.1f\n", score)
+	fmt.Printf("Over: %d\n", over)
+	fmt.Printf("Under: %d\n", under)
+	fmt.Printf("Match: %d\n", match)
+}
+
+func WeeklyOverUnderX(season cfl.Season, score float32) {
+	over := 0
+	under := 0
+	previousWeek := 1
+	week := 0
+	fmt.Printf("Target: %.1f\n", score)
+	for _, game := range season.Games {
+		if !(game.Type.ID == 1 && game.Status.ID == 4) {
+			continue
+		}
+
+		week = game.Week
+		if week != previousWeek {
+			fmt.Printf("Week %d: Over: %d, Under: %d\n", previousWeek, over, under)
+			previousWeek = week
+			over = 0
+			under = 0
+		}
+
+		gameScore := game.Team1.Score + game.Team2.Score
+		if float32(gameScore) > score {
+			over++
+		} else {
+			under++
+		}
+	}
+}
